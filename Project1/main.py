@@ -14,16 +14,18 @@ def read_log_file(file_path):
 
 def generate_report(log_contents, report_path):
     with open(report_path, 'w', encoding='utf-8') as file:
-        file.write('# 보고서\n')
+        file.write('# 문제 로그 보고서\n\n')
+        file.write('## 다음은 시스템에서 감지된 이상 로그입니다.\n\n')
 
-        file.write('## 로그 기록\n')
         for line in log_contents:
             parts = line.strip().split(',', 2)
             if len(parts) == 3:
                 log_time, log_event, log_message = parts
-                file.write(f'시간 : {log_time}\n')
-                file.write(f'이벤트 : {log_event}\n')
-                file.write(f'메시지 : {log_message}\n\n')
+
+                if 'unstable' in log_message.lower() or 'explosion' in log_message.lower():
+                    file.write(f'### 시간: {log_time}\n')
+                    file.write(f'- 이벤트: {log_event}\n')
+                    file.write(f'- 메시지: {log_message}\n\n')
 
     print('\n보고서가 생성 완료 : ', report_path)
 
@@ -32,6 +34,11 @@ def main():
     report_file = 'log_analysis.md'
 
     log_contents = read_log_file(log_file)
+
+    print("\n\n")
+
+    for line in reversed(log_contents):
+        print(line.strip())
 
     if log_contents is not None:
         generate_report(log_contents, report_file)
