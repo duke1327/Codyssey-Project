@@ -34,7 +34,7 @@ def w_binary(filename, data):
     try:
         with open(filename, 'wb') as file:
             for item in data:
-                line = f"{item[0]},{item[4]}\n"
+                line = f"{item[0]},{item[1]},{item[2]},{item[3]},{item[4]}\n"
                 file.write(line.encode())
     except Exception as e:
         print(f"이진 파일 저장 실패: {e}")
