@@ -47,12 +47,12 @@ if __name__ == '__main__':
 
     # 단위 정보를 사전 정의
     units = {
-        'mars_base_internal_temperature': '°C',
-        'mars_base_external_temperature': '°C',
-        'mars_base_internal_humidity': '%',
-        'mars_base_external_illuminance': 'W/m2',
-        'mars_base_internal_co2': '%',
-        'mars_base_internal_oxygen': '%'
+        'mars_base_internal_temperature' : '°C',
+        'mars_base_external_temperature' : '°C',
+        'mars_base_internal_humidity' : '%',
+        'mars_base_external_illuminance' : 'W/m2',
+        'mars_base_internal_co2' : '%',
+        'mars_base_internal_oxygen' : '%'
     }
 
     print('더미 센서 환경 값 출력')
