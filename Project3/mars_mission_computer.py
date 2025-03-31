@@ -37,16 +37,18 @@ class DummySensor:
         )
         # log 파일 작성
         try:
+            with open('sensor_log.log', 'r', encoding='utf-8') as log_check:
+                log_content = log_check.readlines()
+        except FileNotFoundError as f:
+            log_content = []
+        try:
             with open('sensor_log.log', 'a', encoding='utf-8') as log_file:
-                """
-                with open ('sensor_log.log', 'r', encoding='utf-8') as log_check:
-                    log_content = log_check.readlines()
-                if log_content is None:
+                if not log_content:
                     log_file.write('Dummy Sensor 로그 파일입니다.\n')
                     log_file.write('날짜, 기지 내부 온도, 기지 외부 온도, 기지 내부 습도, ')
-                    log_file.write('기지 외부 광량, 기지 내부 이산화탄소 농도, 기지 내부 산소 농도')
-                """
-            log_file.write(log_line)
+                    log_file.write('기지 외부 광량, 기지 내부 이산화탄소 농도, 기지 내부 산소 농도\n')
+
+                log_file.write(log_line)
         except Exception as e:
             print(f"파일 작성 중 오류 발생: {e}")
         return self.__env_values
