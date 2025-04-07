@@ -110,6 +110,7 @@ class MissionComputer:
                         avg = sum(values) / len(values)
                         comma = ',' if i < len(keys) - 1 else ''
                         print(f"  '{key}_5min_avg' : {round(avg, 2)}{comma}")
+                        self.__history[key] = []
                     print('}\n')
 
                 # 5초마다 반복하게 설정
