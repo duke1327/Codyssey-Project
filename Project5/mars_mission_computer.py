@@ -19,10 +19,12 @@ class MissionComputer:
         if not os.path.exists(self.setting_file):
             print(f"'{self.setting_file}' 파일이 없어 기본 설정으로 생성합니다.")
             with open(self.setting_file, 'w', encoding='utf-8') as f:
+                f.write('os, os_version, cpu_type, cpu_core, memory, cpu_usage, memory_usage\n')
                 f.write('\n'.join(self.default_options))
             return set(self.default_options)
         else:
             with open(self.setting_file, 'r', encoding='utf-8') as f:
+                header = next(f)
                 return set(line.strip() for line in f if line.strip())
 
     # get_mission_computer_info 메소드 추가
