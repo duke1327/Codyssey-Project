@@ -109,6 +109,7 @@ class Calculator(QWidget):
             # 사칙연산이나 기타 부호일 경우엔 그 뒤에 붙이기
             else:
                 self.current_expression += text
+                self.just_cal = False
 
         self.display.setText(self.current_expression)
 
