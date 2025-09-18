@@ -30,8 +30,8 @@ def save_text_file(filepath, text):
         print(f"경고: 파일을 쓰는 중 오류 발생 → {e}")
 
 def main():
-    # 상대 경로 기준: Project9 → ../Project8-2/password.txt
-    cipher_text = load_text_file("../Project8-2/password.txt")
+    # 상대 경로 기준: Project09 → ../Project08-2/password.txt
+    cipher_text = load_text_file("../Project08-2/password.txt")
     if not cipher_text:
         return
 
