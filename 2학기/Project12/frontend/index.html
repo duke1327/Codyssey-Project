@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>질문 게시판</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Malgun Gothic', sans-serif;
+      background: #f5f5f8;
+      color: #222;
+    }
+    .layout {
+      max-width: 960px;
+      margin: 40px auto;
+      padding: 0 16px 32px;
+    }
+    h1 {
+      margin: 0 0 10px;
+      font-size: 26px;
+    }
+    .subtitle {
+      margin: 0 0 24px;
+      color: #666;
+      font-size: 14px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 840px) {
+      .grid {
+        grid-template-columns: 1fr 1.1fr;
+      }
+    }
+    .panel {
+      background: #fff;
+      border-radius: 10px;
+      border: 1px solid #e0e2e8;
+      padding: 16px 18px 18px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    }
+    .panel h2 {
+      margin: 0 0 12px;
+      font-size: 18px;
+    }
+    .label {
+      display: block;
+      font-size: 13px;
+      margin: 10px 2px 4px;
+      color: #555;
+    }
+    .input, .textarea {
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccd1dd;
+      font-size: 14px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      background: #fafbff;
+    }
+    .input:focus,
+    .textarea:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59,130,246,0.15);
+      background: #fff;
+    }
+    .textarea {
+      resize: vertical;
+      min-height: 110px;
+    }
+    .btn-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .btn {
+      border-radius: 6px;
+      border: 1px solid transparent;
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      background: #2563eb;
+      color: #fff;
+      font-weight: 600;
+    }
+    .btn.secondary {
+      background: #e5e7f0;
+      color: #333;
+      border-color: #d2d6e4;
+    }
+    .btn[disabled] {
+      cursor: not-allowed;
+      opacity: 0.7;
+    }
+    .message {
+      margin-top: 6px;
+      font-size: 13px;
+      min-height: 18px;
+      color: #666;
+    }
+    .message.ok { color: #16a34a; }
+    .message.warn { color: #ca8a04; }
+    .message.error { color: #dc2626; }
+
+    /* 목록 */
+    .toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+      font-size: 13px;
+      color: #555;
+    }
+    .toolbar-right {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .small-input {
+      padding: 6px 8px;
+      font-size: 13px;
+      border-radius: 5px;
+      border: 1px solid #ccd1dd;
+      outline: none;
+      min-width: 160px;
+    }
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .item {
+      border-radius: 8px;
+      border: 1px solid #e0e2ea;
+      background: #fafbff;
+      padding: 10px 12px;
+    }
+    .item-header {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      align-items: baseline;
+      margin-bottom: 4px;
+    }
+    .item-title {
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .item-id {
+      color: #2563eb;
+      margin-right: 6px;
+    }
+    .item-meta {
+      font-size: 12px;
+      color: #6b7280;
+      white-space: nowrap;
+    }
+    .item-content {
+      font-size: 14px;
+      color: #374151;
+      white-space: pre-wrap;
+    }
+    .empty, .error-box {
+      border-radius: 8px;
+      border: 1px dashed #d4d7e4;
+      padding: 12px;
+      font-size: 14px;
+      color: #6b7280;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="layout">
+    <header>
+      <h1>질문 게시판</h1>
+      <p class="subtitle">질문을 등록하고 목록에서 바로 확인해 보세요.</p>
+    </header>
+
+    <section class="grid">
+      <!-- 작성 영역 -->
+      <section class="panel" aria-labelledby="form-title">
+        <h2 id="form-title">질문 작성</h2>
+
+        <label class="label" for="subject">제목 *</label>
+        <input id="subject" class="input" placeholder="예: 코디세이는 어떤 프로젝트인가요?" />
+
+        <label class="label" for="content">내용 *</label>
+        <textarea id="content" class="textarea" placeholder="상세 질문 내용을 입력하세요."></textarea>
+
+        <div class="btn-row">
+          <button id="resetBtn" class="btn secondary" type="button">초기화</button>
+          <button id="createBtn" class="btn" type="button">등록</button>
+        </div>
+        <div id="formMsg" class="message"></div>
+      </section>
+
+      <!-- 목록 영역 -->
+      <section class="panel" aria-labelledby="list-title">
+        <div class="toolbar">
+          <div id="countText">총 0건</div>
+          <div class="toolbar-right">
+            <input id="search" class="small-input" placeholder="제목/내용 검색" />
+            <button id="reloadBtn" class="btn secondary" type="button">새로고침</button>
+          </div>
+        </div>
+        <h2 id="list-title" style="margin:0 0 8px; font-size:16px;">질문 목록</h2>
+        <div id="list" class="list"></div>
+      </section>
+    </section>
+  </div>
+
+  <script>
+    const API_LIST = '/api/question/list';   // GET: 질문 목록
+    const API_CREATE = '/api/question/create'; // POST: 질문 등록 (QuestionCreate 스키마)
+
+    const $ = (id) => document.getElementById(id);
+    const els = {
+      subject: $('subject'),
+      content: $('content'),
+      createBtn: $('createBtn'),
+      resetBtn: $('resetBtn'),
+      formMsg: $('formMsg'),
+      list: $('list'),
+      countText: $('countText'),
+      search: $('search'),
+      reloadBtn: $('reloadBtn'),
+    };
+
+    let cache = [];
+
+    function setFormMessage(text, type) {
+      els.formMsg.textContent = text || '';
+      els.formMsg.className = 'message' + (type ? ' ' + type : '');
+    }
+
+    function setLoading(loading) {
+      els.createBtn.disabled = loading;
+      els.createBtn.textContent = loading ? '등록 중...' : '등록';
+    }
+
+    function sanitize(str) {
+      return (str || '').replace(/[<>&]/g, (c) => (
+        { '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c]
+      ));
+    }
+
+    async function requestJson(url, { method = 'GET', body } = {}) {
+      const options = { method, headers: {} };
+      if (body && method !== 'GET') {
+        options.headers['Content-Type'] = 'application/json';
+        options.body = JSON.stringify(body);
+      }
+      const res = await fetch(url, options);
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        const detail = data && data.detail ? data.detail : `HTTP ${res.status}`;
+        throw new Error(detail);
+      }
+      return data;
+    }
+
+    function renderList(list) {
+      const query = (els.search.value || '').toLowerCase();
+      const filtered = list.filter((item) => {
+        if (!query) return true;
+        return (
+          item.subject.toLowerCase().includes(query) ||
+          item.content.toLowerCase().includes(query)
+        );
+      });
+
+      els.list.innerHTML = '';
+      if (!filtered.length) {
+        els.list.innerHTML = '<div class="empty">등록된 질문이 없거나 검색 결과가 없습니다.</div>';
+      } else {
+        filtered.forEach((item) => {
+          const div = document.createElement('div');
+          div.className = 'item';
+          div.innerHTML = `
+            <div class="item-header">
+              <div class="item-title">
+                <span class="item-id">#${item.id}</span>
+                <span>${sanitize(item.subject)}</span>
+              </div>
+              <div class="item-meta">${new Date(item.create_date).toLocaleString()}</div>
+            </div>
+            <div class="item-content">${sanitize(item.content)}</div>
+          `;
+          els.list.appendChild(div);
+        });
+      }
+      els.countText.textContent = `총 ${list.length}건`;
+    }
+
+    async function loadList() {
+      els.list.innerHTML = '<div class="empty">목록을 불러오는 중입니다...</div>';
+      try {
+        const data = await requestJson(API_LIST);
+        cache = Array.isArray(data) ? data : [];
+        renderList(cache);
+      } catch (error) {
+        els.list.innerHTML =
+          `<div class="error-box">목록을 불러오지 못했습니다: ${sanitize(error.message)}</div>`;
+      }
+    }
+
+    async function handleCreate() {
+      setFormMessage('', '');
+      const subject = els.subject.value.trim();
+      const content = els.content.value.trim();
+
+      if (!subject || !content) {
+        setFormMessage('제목과 내용을 모두 입력해 주세요.', 'warn');
+        return;
+      }
+
+      setLoading(true);
+      try {
+        await requestJson(API_CREATE, {
+          method: 'POST',
+          body: { subject, content },
+        });
+        els.subject.value = '';
+        els.content.value = '';
+        setFormMessage('질문이 성공적으로 등록되었습니다.', 'ok');
+        await loadList();
+      } catch (error) {
+        setFormMessage(`등록에 실패했습니다: ${error.message}`, 'error');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    // 이벤트 바인딩
+    els.createBtn.addEventListener('click', handleCreate);
+    els.resetBtn.addEventListener('click', () => {
+      els.subject.value = '';
+      els.content.value = '';
+      setFormMessage('', '');
+    });
+    els.reloadBtn.addEventListener('click', loadList);
+    els.search.addEventListener('input', () => renderList(cache));
+
+    // 첫 로딩 시 목록 가져오기
+    loadList();
+  </script>
+</body>
+</html>
